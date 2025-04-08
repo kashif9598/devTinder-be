@@ -13,13 +13,10 @@ userRouter.get("/user/requests/received", userAuth, async (req, res) => {
       status: "interested",
     }).populate("fromUserId", "firstName lastName photoUrl skills about");
     if (connectionRequests.length === 0) {
-      return res
-        .status(404)
-        .json({ message: "No pending request for this user" });
+      return res.json({ message: "No pending request for this user" });
     }
     res.status(200).json({
-      message: "Requests fetched successfully",
-      data: connectionRequests,
+      connectionRequests,
     });
   } catch (err) {
     res.status(400).json({ message: err.message });
@@ -48,7 +45,7 @@ userRouter.get("/user/connections", userAuth, async (req, res) => {
       return row.fromUserId;
     });
 
-    res.json({ data: connections });
+    res.json(connections);
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
@@ -80,7 +77,7 @@ userRouter.get("/feed", userAuth, async (req, res) => {
         { _id: { $ne: loggedInuser._id } },
       ],
     })
-      .select("firstName lastName photoUrl skills about")
+      .select("firstName lastName photoUrl skills about age gender")
       .skip(skip)
       .limit(limit);
 

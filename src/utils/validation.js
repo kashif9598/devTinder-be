@@ -1,16 +1,14 @@
 const validator = require("validator");
 
-const validateSignUpData = (req) => {
-  const { firstName, lastName, emailId, password } = req.body;
-
+const validateSignUpData = (firstName, lastName, emailId, password) => {
   if (!firstName) {
-    throw new Error("FirstName is not valid");
+    return "FirstName is not valid";
   } else if (!lastName) {
-    throw new Error("Lastname is not valid");
+    return "Lastname is not valid";
   } else if (!validator.isEmail(emailId)) {
-    throw new Error("Email ID is not valid");
+    return "Email ID is not valid";
   } else if (!validator.isStrongPassword(password)) {
-    throw new Error("Password is too weak");
+    return "Password is too weak";
   }
 };
 
@@ -46,7 +44,7 @@ const validateProfileEditData = (req) => {
     isUpdateAllowed = false;
   } else if (
     updatedData.gender &&
-    GENDER_ALLOWED.includes(updatedData?.gender)
+    !GENDER_ALLOWED.includes(updatedData?.gender)
   ) {
     isUpdateAllowed = false;
   }
@@ -57,8 +55,7 @@ const validateProfileEditData = (req) => {
 // validate strong password
 const validateStrongPassword = (req) => {
   const { password } = req.body;
-   return validator.isStrongPassword(password) ? true : false
-  
+  return validator.isStrongPassword(password) ? true : false;
 };
 
 module.exports = {
