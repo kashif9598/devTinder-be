@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const cookieParser = require("cookie-parser");
 const connectDB = require("./config/database");
@@ -16,6 +17,10 @@ app.use(
 );
 app.use(express.json());
 app.use(cookieParser());
+app.use((req, res, next) => {
+  res.set("Cache-Control", "no-store");
+  next();
+});
 
 app.use("/", authRouter);
 app.use("/", profileRouter);
@@ -25,7 +30,7 @@ app.use("/", userRouter);
 connectDB()
   .then(() => {
     console.log("Database connection established");
-    app.listen(8000, () => {
+    app.listen(process.env.PORT, () => {
       console.log(`Server running on PORT 8000`);
     });
   })
